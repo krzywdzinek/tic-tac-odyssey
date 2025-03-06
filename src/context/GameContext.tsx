@@ -20,6 +20,8 @@ interface GameContextType {
   selectPlayer: (player: Player) => void;
   handleCellClick: (index: number) => void;
   resetGame: () => void;
+  cleanBoard: () => void;
+  playNextRound: () => void;
 }
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -68,6 +70,25 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCurrentPlayer(currentPlayer === 'X' ? 'O' : 'X');
   };
 
+  const cleanBoard = () => {
+    setBoard(Array(9).fill(null));
+    setWinner(null);
+    setWinningLine(null);
+    setMoves(0);
+    toast.info("Board has been cleared");
+  };
+
+  const playNextRound = () => {
+    setBoard(Array(9).fill(null));
+    setWinner(null);
+    setWinningLine(null);
+    setStatus('playing');
+    setMoves(0);
+    // X always starts a new round
+    setCurrentPlayer('X');
+    toast.success("Starting a new round!");
+  };
+
   const resetGame = () => {
     setBoard(Array(9).fill(null));
     setCurrentPlayer('X');
@@ -90,6 +111,8 @@ export const GameProvider: React.FC<{ children: React.ReactNode }> = ({ children
         selectPlayer,
         handleCellClick,
         resetGame,
+        cleanBoard,
+        playNextRound,
       }}
     >
       {children}

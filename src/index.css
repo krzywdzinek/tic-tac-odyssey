@@ -1,5 +1,6 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans+Condensed:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200;300;400;500;600;700;800&display=swap');
 
 @tailwind base;
@@ -93,20 +94,20 @@
   }
 
   body {
-    @apply bg-game-bg text-foreground font-sans antialiased;
+    @apply bg-game-bg text-foreground font-poppins antialiased;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-display font-medium tracking-tight;
+    @apply font-fira font-medium tracking-tight;
   }
 }
 
 /* Custom styling for the game */
 @layer components {
   .glass-card {
-    @apply bg-black/30 backdrop-blur-md border border-white/20 shadow-lg;
+    @apply bg-black/40 backdrop-blur-md border border-white/30 shadow-lg;
   }
   
   .board-grid {
@@ -117,11 +118,11 @@
   }
 
   .cell {
-    @apply flex items-center justify-center backdrop-blur-sm bg-black/40 rounded-md shadow-sm transition-all duration-200 select-none;
+    @apply flex items-center justify-center backdrop-blur-sm bg-black/40 rounded-md shadow-sm transition-all duration-150 select-none;
   }
 
   .cell:not(.disabled):hover {
-    @apply shadow-md transform scale-[1.02] transition-transform duration-200 bg-white/20;
+    @apply shadow-md transform scale-[1.03] transition-transform duration-150 bg-white/20;
   }
 
   .x-mark {
@@ -133,23 +134,28 @@
   }
 
   .player-indicator {
-    @apply inline-flex items-center justify-center text-sm font-medium transition-all duration-300;
+    @apply inline-flex items-center justify-center text-sm font-medium transition-all duration-200;
   }
 
   .button-press {
-    @apply transform active:scale-95 transition-transform duration-200;
+    @apply transform active:scale-95 transition-transform duration-150;
   }
   
   .drop-shadow-glow-blue {
-    filter: drop-shadow(0 0 8px rgba(93, 95, 239, 0.7));
+    filter: drop-shadow(0 0 8px rgba(57, 90, 162, 0.8));
   }
   
   .drop-shadow-glow-pink {
-    filter: drop-shadow(0 0 8px rgba(239, 93, 168, 0.7));
+    filter: drop-shadow(0 0 8px rgba(204, 78, 96, 0.8));
   }
   
   .drop-shadow-glow-purple {
-    filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.7));
+    filter: drop-shadow(0 0 8px rgba(181, 75, 145, 0.8));
+  }
+
+  .gradient-text {
+    @apply text-transparent bg-clip-text;
+    background-image: linear-gradient(90deg, #B67E3A, #D44E2D, #CC4E60, #B54B91, #8E4B96, #395AA2, #397D8F, #4D9A8E);
   }
 }
 
@@ -161,7 +167,7 @@
 
 .tilt-card-inner {
   transform-style: preserve-3d;
-  transition: transform 0.3s ease;
+  transition: transform 0.2s ease;
 }
 
 .depth-1 {
@@ -178,7 +184,7 @@
 
 /* Custom tablet styles */
 [role="tablist"] {
-  @apply bg-black/40 backdrop-blur-lg border border-white/20 p-1.5 rounded-lg shadow-xl;
+  @apply bg-black/50 backdrop-blur-lg border border-white/30 p-1.5 rounded-lg shadow-xl;
 }
 
 [role="tab"] {
@@ -186,9 +192,21 @@
 }
 
 [role="tab"][data-state="active"] {
-  @apply bg-white/20 text-white shadow-md;
+  @apply bg-white/30 text-white shadow-md;
 }
 
 [role="tab"]:hover:not([data-state="active"]) {
-  @apply bg-white/10;
+  @apply bg-white/20;
+}
+
+/* Game gradient background */
+.game-gradient {
+  background: linear-gradient(135deg, 
+    rgba(57, 113, 143, 0.8) 0%, 
+    rgba(56, 90, 162, 0.8) 20%, 
+    rgba(142, 75, 150, 0.8) 40%, 
+    rgba(181, 75, 145, 0.8) 60%, 
+    rgba(204, 78, 96, 0.8) 80%, 
+    rgba(212, 70, 45, 0.8) 100%
+  );
 }

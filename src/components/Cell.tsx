@@ -26,7 +26,7 @@ const Cell: React.FC<CellProps> = ({ index, value, isWinningCell }) => {
     <div
       ref={cellRef}
       className={cn(
-        "cell aspect-square w-full h-full cursor-pointer button-press select-none transition-all duration-300",
+        "cell aspect-square w-full h-full cursor-pointer button-press select-none transition-all duration-200",
         isDisabled ? "cursor-default" : "hover:bg-white/30",
         isWinningCell ? "border-2 border-white/50 shadow-lg bg-white/30" : ""
       )}
@@ -43,7 +43,7 @@ const Cell: React.FC<CellProps> = ({ index, value, isWinningCell }) => {
           style={{ 
             strokeDasharray: '100', 
             strokeDashoffset: '0',
-            filter: 'drop-shadow(0 0 8px rgba(93, 95, 239, 0.7))'
+            filter: 'drop-shadow(0 0 8px rgba(57, 90, 162, 0.8))'
           }}
         />
       )}
@@ -54,7 +54,7 @@ const Cell: React.FC<CellProps> = ({ index, value, isWinningCell }) => {
             strokeDasharray: '283', 
             strokeDashoffset: '0', 
             fill: 'none',
-            filter: 'drop-shadow(0 0 8px rgba(239, 93, 168, 0.7))'
+            filter: 'drop-shadow(0 0 8px rgba(204, 78, 96, 0.8))'
           }}
         />
       )}

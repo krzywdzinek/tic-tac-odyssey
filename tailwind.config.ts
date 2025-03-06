@@ -21,7 +21,9 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
-				display: ['Oxanium', 'Inter', 'sans-serif'],
+				poppins: ['Poppins', 'sans-serif'],
+				fira: ['Fira Sans Condensed', 'sans-serif'],
+				display: ['Oxanium', 'Fira Sans Condensed', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -68,11 +70,22 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				game: {
-					'x': '#5D5FEF',
-					'o': '#EF5DA8',
+					'x': '#395AA2', // Blue - R56,G90,B162
+					'o': '#CC4E60', // Pink - R204,G78,B96
 					'neutral': '#98A2B3',
 					'bg': '#121218',
 					'card': '#1A1A24',
+					'gradient1': '#B67E3A', // R182,G62,B40
+					'gradient2': '#D4462D', // R212,G70,B45
+					'gradient3': '#D44B40', // R212,G75,B64
+					'gradient4': '#CC4E60', // R204,G78,B96
+					'gradient5': '#C64E72', // R198,G78,B114
+					'gradient6': '#B54B91', // R181,G75,B145
+					'gradient7': '#8E4B96', // R142,G75,B150
+					'gradient8': '#395AA2', // R56,G90,B162
+					'gradient9': '#39718F', // R57,G113,B143
+					'gradient10': '#4D9A8E', // R77,G154,B142
+					'gradient11': '#5B9D96', // R91,G157,B150
 				}
 			},
 			borderRadius: {
@@ -139,17 +152,17 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out',
-				'fade-in': 'fade-in 0.3s ease-out',
-				'fade-out': 'fade-out 0.2s ease-in',
-				'scale-in': 'scale-in 0.2s ease-out',
-				'scale-out': 'scale-out 0.2s ease-in',
-				'slide-up': 'slide-up 0.3s ease-out',
-				'slide-down': 'slide-down 0.3s ease-out',
-				'draw-line': 'draw-line 0.5s ease-in-out forwards',
-				'draw-circle': 'draw-circle 0.6s ease-in-out forwards',
-				'draw-x': 'draw-x 0.6s ease-in-out forwards',
-				'float': 'float 3s ease-in-out infinite',
-				'ping-small': 'ping-small 1.5s cubic-bezier(0, 0, 0.2, 1) infinite',
+				'fade-in': 'fade-in 0.25s ease-out',
+				'fade-out': 'fade-out 0.15s ease-in',
+				'scale-in': 'scale-in 0.15s ease-out',
+				'scale-out': 'scale-out 0.15s ease-in',
+				'slide-up': 'slide-up 0.2s ease-out',
+				'slide-down': 'slide-down 0.2s ease-out',
+				'draw-line': 'draw-line 0.4s ease-in-out forwards',
+				'draw-circle': 'draw-circle 0.4s ease-in-out forwards',
+				'draw-x': 'draw-x 0.4s ease-in-out forwards',
+				'float': 'float 2.5s ease-in-out infinite',
+				'ping-small': 'ping-small 1.2s cubic-bezier(0, 0, 0.2, 1) infinite',
 			},
 			backdropBlur: {
 				xs: '2px',
