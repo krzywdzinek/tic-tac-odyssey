@@ -41,7 +41,7 @@ const Background3D: React.FC = () => {
         shininess: 100,
         specular: 0x5D5FEF,
         emissive: 0x3034AF,
-        emissiveIntensity: 0.2
+        emissiveIntensity: 0.3
       });
       
       const group = new THREE.Group();
@@ -68,7 +68,7 @@ const Background3D: React.FC = () => {
         shininess: 100,
         specular: 0xEF5DA8,
         emissive: 0xAD3B79,
-        emissiveIntensity: 0.2
+        emissiveIntensity: 0.3
       });
       return new THREE.Mesh(geometry, material);
     };
@@ -113,11 +113,11 @@ const Background3D: React.FC = () => {
     scene.add(directionalLight);
     
     // Add point lights for better illumination
-    const blueLight = new THREE.PointLight(0x5D5FEF, 3, 10);
+    const blueLight = new THREE.PointLight(0x5D5FEF, 4, 12);
     blueLight.position.set(-2, 2, 2);
     scene.add(blueLight);
     
-    const pinkLight = new THREE.PointLight(0xEF5DA8, 3, 10);
+    const pinkLight = new THREE.PointLight(0xEF5DA8, 4, 12);
     pinkLight.position.set(2, -2, 2);
     scene.add(pinkLight);
     
@@ -186,7 +186,7 @@ const Background3D: React.FC = () => {
     <div 
       ref={containerRef} 
       className="fixed top-0 left-0 w-full h-full -z-10"
-      style={{ background: 'linear-gradient(to bottom, #0f0f1a, #1c1c2e)' }}
+      style={{ background: 'linear-gradient(to bottom, #0a0a14, #14141e)' }}
     />
   );
 };

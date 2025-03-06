@@ -28,13 +28,13 @@ const Cell: React.FC<CellProps> = ({ index, value, isWinningCell }) => {
       className={cn(
         "cell aspect-square w-full h-full cursor-pointer button-press select-none transition-all duration-200",
         isDisabled ? "cursor-default" : "hover:bg-white/30",
-        isWinningCell ? "border-2 border-white/50 shadow-lg bg-white/30" : ""
+        isWinningCell ? "border-2 border-white/70 shadow-lg bg-white/30" : ""
       )}
       onClick={() => !isDisabled && handleCellClick(index)}
       aria-label={`Cell ${index}`}
       style={{ 
         transformStyle: 'preserve-3d', 
-        transform: isWinningCell ? 'translateZ(10px)' : 'translateZ(0px)'
+        transform: isWinningCell ? 'translateZ(15px)' : 'translateZ(0px)'
       }}
     >
       {value === 'X' && (
@@ -43,7 +43,7 @@ const Cell: React.FC<CellProps> = ({ index, value, isWinningCell }) => {
           style={{ 
             strokeDasharray: '100', 
             strokeDashoffset: '0',
-            filter: 'drop-shadow(0 0 8px rgba(57, 90, 162, 0.8))'
+            filter: 'drop-shadow(0 0 10px rgba(57, 90, 162, 0.9))'
           }}
         />
       )}
@@ -54,7 +54,7 @@ const Cell: React.FC<CellProps> = ({ index, value, isWinningCell }) => {
             strokeDasharray: '283', 
             strokeDashoffset: '0', 
             fill: 'none',
-            filter: 'drop-shadow(0 0 8px rgba(204, 78, 96, 0.8))'
+            filter: 'drop-shadow(0 0 10px rgba(204, 78, 96, 0.9))'
           }}
         />
       )}

@@ -107,7 +107,7 @@
 /* Custom styling for the game */
 @layer components {
   .glass-card {
-    @apply bg-black/40 backdrop-blur-md border border-white/30 shadow-lg;
+    @apply bg-black/60 backdrop-blur-md border border-white/30 shadow-lg;
   }
   
   .board-grid {
@@ -118,7 +118,7 @@
   }
 
   .cell {
-    @apply flex items-center justify-center backdrop-blur-sm bg-black/40 rounded-md shadow-sm transition-all duration-150 select-none;
+    @apply flex items-center justify-center backdrop-blur-sm bg-black/50 rounded-md shadow-sm transition-all duration-150 select-none;
   }
 
   .cell:not(.disabled):hover {
@@ -157,6 +157,18 @@
     @apply text-transparent bg-clip-text;
     background-image: linear-gradient(90deg, #B67E3A, #D44E2D, #CC4E60, #B54B91, #8E4B96, #395AA2, #397D8F, #4D9A8E);
   }
+  
+  .rainbow-shadow {
+    text-shadow: 
+      0 0 2px #B67E3A,
+      0 0 4px #D44E2D,
+      0 0 6px #CC4E60,
+      0 0 8px #B54B91,
+      0 0 10px #8E4B96,
+      0 0 12px #395AA2,
+      0 0 14px #397D8F,
+      0 0 16px #4D9A8E;
+  }
 }
 
 /* Advanced 3D effects */
@@ -184,7 +196,7 @@
 
 /* Custom tablet styles */
 [role="tablist"] {
-  @apply bg-black/50 backdrop-blur-lg border border-white/30 p-1.5 rounded-lg shadow-xl;
+  @apply bg-black/70 backdrop-blur-lg border border-white/30 p-1.5 rounded-lg shadow-xl;
 }
 
 [role="tab"] {
@@ -202,11 +214,11 @@
 /* Game gradient background */
 .game-gradient {
   background: linear-gradient(135deg, 
-    rgba(57, 113, 143, 0.8) 0%, 
-    rgba(56, 90, 162, 0.8) 20%, 
-    rgba(142, 75, 150, 0.8) 40%, 
-    rgba(181, 75, 145, 0.8) 60%, 
-    rgba(204, 78, 96, 0.8) 80%, 
-    rgba(212, 70, 45, 0.8) 100%
+    rgba(57, 113, 143, 0.9) 0%, 
+    rgba(56, 90, 162, 0.9) 20%, 
+    rgba(142, 75, 150, 0.9) 40%, 
+    rgba(181, 75, 145, 0.9) 60%, 
+    rgba(204, 78, 96, 0.9) 80%, 
+    rgba(212, 70, 45, 0.9) 100%
   );
 }
