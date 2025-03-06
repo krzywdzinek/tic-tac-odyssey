@@ -21,7 +21,7 @@ export default {
 		extend: {
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
-				display: ['SF Pro Display', 'Inter', 'sans-serif'],
+				display: ['Oxanium', 'Inter', 'sans-serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
@@ -71,8 +71,8 @@ export default {
 					'x': '#5D5FEF',
 					'o': '#EF5DA8',
 					'neutral': '#98A2B3',
-					'bg': '#F7F8FA',
-					'card': '#FFFFFF',
+					'bg': '#121218',
+					'card': '#1A1A24',
 				}
 			},
 			borderRadius: {

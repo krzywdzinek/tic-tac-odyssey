@@ -6,7 +6,7 @@ import { X, Circle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const PlayerSelection: React.FC = () => {
-  const { selectPlayer } = useGame();
+  const { selectPlayer, playerChoice } = useGame();
 
   return (
     <div className="animate-fade-in flex flex-col items-center justify-center p-6 rounded-xl glass-card border border-white/20 tilt-card">
@@ -15,7 +15,10 @@ const PlayerSelection: React.FC = () => {
       <div className="flex space-x-6 items-center justify-center">
         <Button
           variant="outline"
-          className="group h-20 w-20 rounded-xl transition-all duration-300 hover:shadow-lg hover:bg-game-x/20 border border-white/30 bg-white/10"
+          className={cn(
+            "group h-20 w-20 rounded-xl transition-all duration-300 hover:shadow-lg hover:bg-game-x/20 border border-white/30 bg-white/10",
+            playerChoice === 'X' && "bg-game-x/30 shadow-lg border-game-x/50"
+          )}
           onClick={() => selectPlayer('X')}
         >
           <X className="h-10 w-10 text-game-x group-hover:scale-110 transition-transform duration-300 drop-shadow-glow-blue" />
@@ -23,7 +26,10 @@ const PlayerSelection: React.FC = () => {
         
         <Button
           variant="outline"
-          className="group h-20 w-20 rounded-xl transition-all duration-300 hover:shadow-lg hover:bg-game-o/20 border border-white/30 bg-white/10"
+          className={cn(
+            "group h-20 w-20 rounded-xl transition-all duration-300 hover:shadow-lg hover:bg-game-o/20 border border-white/30 bg-white/10",
+            playerChoice === 'O' && "bg-game-o/30 shadow-lg border-game-o/50"
+          )}
           onClick={() => selectPlayer('O')}
         >
           <Circle className="h-10 w-10 text-game-o group-hover:scale-110 transition-transform duration-300 drop-shadow-glow-pink" />

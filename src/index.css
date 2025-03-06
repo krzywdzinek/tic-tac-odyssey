@@ -1,5 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@200;300;400;500;600;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -105,7 +106,7 @@
 /* Custom styling for the game */
 @layer components {
   .glass-card {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-sm;
+    @apply bg-black/30 backdrop-blur-md border border-white/20 shadow-lg;
   }
   
   .board-grid {
@@ -116,11 +117,11 @@
   }
 
   .cell {
-    @apply flex items-center justify-center backdrop-blur-sm bg-white/20 rounded-md shadow-sm transition-all duration-200 select-none;
+    @apply flex items-center justify-center backdrop-blur-sm bg-black/40 rounded-md shadow-sm transition-all duration-200 select-none;
   }
 
   .cell:not(.disabled):hover {
-    @apply shadow-md transform scale-[1.02] transition-transform duration-200 bg-white/30;
+    @apply shadow-md transform scale-[1.02] transition-transform duration-200 bg-white/20;
   }
 
   .x-mark {
@@ -173,4 +174,21 @@
 
 .depth-3 {
   transform: translateZ(30px);
+}
+
+/* Custom tablet styles */
+[role="tablist"] {
+  @apply bg-black/40 backdrop-blur-lg border border-white/20 p-1.5 rounded-lg shadow-xl;
+}
+
+[role="tab"] {
+  @apply text-white/90 font-medium py-2 transition-all;
+}
+
+[role="tab"][data-state="active"] {
+  @apply bg-white/20 text-white shadow-md;
+}
+
+[role="tab"]:hover:not([data-state="active"]) {
+  @apply bg-white/10;
 }

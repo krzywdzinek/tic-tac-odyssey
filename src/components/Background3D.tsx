@@ -27,6 +27,7 @@ const Background3D: React.FC = () => {
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setClearColor(0x000000, 0);
     containerRef.current.appendChild(renderer.domElement);
     
     // Create a group to hold all objects
@@ -39,6 +40,8 @@ const Background3D: React.FC = () => {
         color: 0x5D5FEF,
         shininess: 100,
         specular: 0x5D5FEF,
+        emissive: 0x3034AF,
+        emissiveIntensity: 0.2
       });
       
       const group = new THREE.Group();
@@ -64,17 +67,19 @@ const Background3D: React.FC = () => {
         color: 0xEF5DA8,
         shininess: 100,
         specular: 0xEF5DA8,
+        emissive: 0xAD3B79,
+        emissiveIntensity: 0.2
       });
       return new THREE.Mesh(geometry, material);
     };
     
     // Add multiple X and O shapes to the scene
-    for (let i = 0; i < 7; i++) {
+    for (let i = 0; i < 10; i++) {
       const x = createXShape();
       x.position.set(
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 5
+        (Math.random() - 0.5) * 14,
+        (Math.random() - 0.5) * 14,
+        (Math.random() - 0.5) * 8
       );
       x.rotation.set(
         Math.random() * Math.PI,
@@ -86,9 +91,9 @@ const Background3D: React.FC = () => {
       
       const o = createOShape();
       o.position.set(
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 10,
-        (Math.random() - 0.5) * 5
+        (Math.random() - 0.5) * 14,
+        (Math.random() - 0.5) * 14,
+        (Math.random() - 0.5) * 8
       );
       o.rotation.set(
         Math.random() * Math.PI,
@@ -107,20 +112,36 @@ const Background3D: React.FC = () => {
     directionalLight.position.set(1, 1, 1);
     scene.add(directionalLight);
     
+    // Add point lights for better illumination
+    const blueLight = new THREE.PointLight(0x5D5FEF, 3, 10);
+    blueLight.position.set(-2, 2, 2);
+    scene.add(blueLight);
+    
+    const pinkLight = new THREE.PointLight(0xEF5DA8, 3, 10);
+    pinkLight.position.set(2, -2, 2);
+    scene.add(pinkLight);
+    
     // Animation loop
     const animate = () => {
       requestAnimationFrame(animate);
       
       // Rotate the entire group slowly
-      group.rotation.x += 0.001;
-      group.rotation.y += 0.002;
+      group.rotation.x += 0.0005;
+      group.rotation.y += 0.001;
       
       // Animate individual objects
       group.children.forEach((child, i) => {
-        child.rotation.x += 0.003 * (i % 3);
-        child.rotation.y += 0.002 * ((i + 1) % 3);
-        child.position.y += Math.sin(Date.now() * 0.001 + i) * 0.002;
+        child.rotation.x += 0.002 * (i % 3);
+        child.rotation.y += 0.001 * ((i + 1) % 3);
+        child.position.y += Math.sin(Date.now() * 0.0005 + i) * 0.002;
       });
+      
+      // Move lights slightly
+      blueLight.position.x = 2 * Math.sin(Date.now() * 0.0003);
+      blueLight.position.y = 2 * Math.cos(Date.now() * 0.0004);
+      
+      pinkLight.position.x = 2 * Math.cos(Date.now() * 0.0003);
+      pinkLight.position.y = 2 * Math.sin(Date.now() * 0.0004);
       
       renderer.render(scene, camera);
     };
@@ -137,9 +158,23 @@ const Background3D: React.FC = () => {
     
     window.addEventListener('resize', handleResize);
     
+    // Mouse movement effect
+    const handleMouseMove = (event: MouseEvent) => {
+      const mouseX = (event.clientX / window.innerWidth) * 2 - 1;
+      const mouseY = -(event.clientY / window.innerHeight) * 2 + 1;
+      
+      // Subtle camera movement based on mouse position
+      camera.position.x = mouseX * 0.3;
+      camera.position.y = mouseY * 0.3;
+      camera.lookAt(0, 0, 0);
+    };
+    
+    window.addEventListener('mousemove', handleMouseMove);
+    
     // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
       if (containerRef.current) {
         containerRef.current.removeChild(renderer.domElement);
       }
@@ -151,6 +186,7 @@ const Background3D: React.FC = () => {
     <div 
       ref={containerRef} 
       className="fixed top-0 left-0 w-full h-full -z-10"
+      style={{ background: 'linear-gradient(to bottom, #0f0f1a, #1c1c2e)' }}
     />
   );
 };
