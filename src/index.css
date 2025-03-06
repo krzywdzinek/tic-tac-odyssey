@@ -105,7 +105,7 @@
 /* Custom styling for the game */
 @layer components {
   .glass-card {
-    @apply bg-white/80 backdrop-blur-lg border border-white/20 shadow-sm;
+    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-sm;
   }
   
   .board-grid {
@@ -116,19 +116,19 @@
   }
 
   .cell {
-    @apply flex items-center justify-center bg-white rounded-md shadow-sm transition-all duration-200 select-none;
+    @apply flex items-center justify-center backdrop-blur-sm bg-white/20 rounded-md shadow-sm transition-all duration-200 select-none;
   }
 
   .cell:not(.disabled):hover {
-    @apply shadow-md transform scale-[1.02] transition-transform duration-200;
+    @apply shadow-md transform scale-[1.02] transition-transform duration-200 bg-white/30;
   }
 
   .x-mark {
-    @apply text-game-x;
+    @apply text-game-x drop-shadow-glow-blue;
   }
 
   .o-mark {
-    @apply text-game-o;
+    @apply text-game-o drop-shadow-glow-pink;
   }
 
   .player-indicator {
@@ -138,4 +138,39 @@
   .button-press {
     @apply transform active:scale-95 transition-transform duration-200;
   }
+  
+  .drop-shadow-glow-blue {
+    filter: drop-shadow(0 0 8px rgba(93, 95, 239, 0.7));
+  }
+  
+  .drop-shadow-glow-pink {
+    filter: drop-shadow(0 0 8px rgba(239, 93, 168, 0.7));
+  }
+  
+  .drop-shadow-glow-purple {
+    filter: drop-shadow(0 0 8px rgba(124, 58, 237, 0.7));
+  }
+}
+
+/* Advanced 3D effects */
+.tilt-card {
+  transform-style: preserve-3d;
+  transform: perspective(1000px);
+}
+
+.tilt-card-inner {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.depth-1 {
+  transform: translateZ(10px);
+}
+
+.depth-2 {
+  transform: translateZ(20px);
+}
+
+.depth-3 {
+  transform: translateZ(30px);
 }

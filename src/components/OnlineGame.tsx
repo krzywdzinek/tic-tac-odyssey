@@ -42,32 +42,32 @@ const OnlineGame: React.FC = () => {
   };
 
   return (
-    <div className="animate-fade-in flex flex-col w-full max-w-md mx-auto p-6 rounded-xl glass-card">
-      <h2 className="text-xl font-medium text-gray-800 mb-6 text-center">Play Online</h2>
+    <div className="animate-fade-in flex flex-col w-full max-w-md mx-auto p-6 rounded-xl glass-card border border-white/20 tilt-card">
+      <h2 className="text-xl font-medium text-white mb-6 text-center">Play Online</h2>
       
       <div className="space-y-6">
         <div className="flex flex-col space-y-3">
-          <h3 className="text-sm font-medium text-gray-700">Create a new game</h3>
+          <h3 className="text-sm font-medium text-white/90">Create a new game</h3>
           <Button 
             onClick={handleCreateRoom}
-            className="w-full button-press"
+            className="w-full button-press bg-gradient-to-r from-game-x to-game-o hover:opacity-90 text-white border border-white/20"
           >
             Create Game Room
           </Button>
           
           {roomId && (
-            <div className="animate-scale-in flex flex-col space-y-2 p-4 bg-gray-50 rounded-lg">
+            <div className="animate-scale-in flex flex-col space-y-2 p-4 glass-card rounded-lg">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-500">Room ID:</span>
-                <code className="px-2 py-1 bg-white rounded text-sm font-mono">{roomId}</code>
-                <Button variant="ghost" size="icon" onClick={handleCopyRoomId}>
+                <span className="text-sm font-medium text-white/80">Room ID:</span>
+                <code className="px-2 py-1 bg-white/20 rounded text-sm font-mono text-white">{roomId}</code>
+                <Button variant="ghost" size="icon" onClick={handleCopyRoomId} className="text-white hover:bg-white/20">
                   <Copy className="h-4 w-4" />
                 </Button>
               </div>
               
               <Button 
                 variant="outline" 
-                className="mt-2 w-full flex items-center justify-center gap-2 button-press"
+                className="mt-2 w-full flex items-center justify-center gap-2 button-press text-white border-white/20 hover:bg-white/20"
                 onClick={shareGame}
               >
                 <Share2 className="h-4 w-4" />
@@ -76,7 +76,7 @@ const OnlineGame: React.FC = () => {
               
               <Button 
                 variant="default" 
-                className="w-full flex items-center justify-center gap-2 button-press"
+                className="w-full flex items-center justify-center gap-2 button-press bg-gradient-to-r from-game-o to-game-x hover:opacity-90 text-white border border-white/20"
                 onClick={() => window.location.href = `/online/${roomId}`}
               >
                 <ExternalLink className="h-4 w-4" />
@@ -87,23 +87,26 @@ const OnlineGame: React.FC = () => {
         </div>
         
         <div className="flex flex-col space-y-3">
-          <div className="h-px bg-gray-200 my-2"></div>
-          <h3 className="text-sm font-medium text-gray-700">Join an existing game</h3>
+          <div className="h-px bg-white/20 my-2"></div>
+          <h3 className="text-sm font-medium text-white/90">Join an existing game</h3>
           <div className="flex space-x-2">
             <Input
               value={joinRoomId}
               onChange={(e) => setJoinRoomId(e.target.value)}
               placeholder="Enter Room ID"
-              className="flex-1"
+              className="flex-1 bg-white/10 border-white/20 text-white placeholder:text-white/50"
             />
-            <Button onClick={handleJoinGame} className="button-press">
+            <Button 
+              onClick={handleJoinGame} 
+              className="button-press bg-gradient-to-r from-game-x to-purple-600 hover:opacity-90 text-white border border-white/20"
+            >
               Join
             </Button>
           </div>
         </div>
       </div>
       
-      <p className="mt-8 text-xs text-gray-500 text-center">
+      <p className="mt-8 text-xs text-white/70 text-center">
         Share the Room ID with a friend to play together.
       </p>
     </div>
