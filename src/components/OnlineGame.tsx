@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Share2, Copy, ExternalLink } from 'lucide-react';
 import { generateRoomId } from '@/lib/gameUtils';
-import { useToast } from "sonner";
+import { toast } from "sonner";
 
 const OnlineGame: React.FC = () => {
   const [roomId, setRoomId] = useState<string>("");

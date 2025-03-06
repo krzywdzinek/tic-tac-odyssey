@@ -8,7 +8,7 @@ import PlayerSelection from '@/components/PlayerSelection';
 import GameStatus from '@/components/GameStatus';
 import OnlineGame from '@/components/OnlineGame';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { GitHubLogoIcon } from '@radix-ui/react-icons';
+import { Github } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -54,7 +54,7 @@ const Index = () => {
             rel="noopener noreferrer"
             className="text-gray-400 hover:text-gray-800 transition-colors duration-200"
           >
-            <GitHubLogoIcon className="h-5 w-5" />
+            <Github className="h-5 w-5" />
           </a>
         </div>
         <p className="text-xs text-gray-400 text-center">
