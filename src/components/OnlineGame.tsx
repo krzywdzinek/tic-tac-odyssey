@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Share2, Copy, ExternalLink, RotateCw } from 'lucide-react';
@@ -25,9 +24,15 @@ const OnlineGame: React.FC = () => {
       localStorage.setItem('createdRooms', JSON.stringify(createdRoomsList));
     }
     
-    // Initialize room status
-    const roomStatus = { creatorPresent: false, joinerPresent: false };
+    // Initialize room status with creator present
+    const roomStatus = { 
+      creatorPresent: true, 
+      joinerPresent: false,
+      gameActive: false 
+    };
     localStorage.setItem(`room_${newRoomId}_status`, JSON.stringify(roomStatus));
+    
+    toast.success(`Room ${newRoomId} created!`);
   };
   
   const handleCopyRoomId = () => {
@@ -41,6 +46,24 @@ const OnlineGame: React.FC = () => {
       return;
     }
     
+    // Check if the room exists in localStorage
+    const roomStatusStr = localStorage.getItem(`room_${joinRoomId}_status`);
+    
+    if (!roomStatusStr) {
+      // Initialize room if it doesn't exist
+      const roomStatus = { 
+        creatorPresent: false, 
+        joinerPresent: true,
+        gameActive: false 
+      };
+      localStorage.setItem(`room_${joinRoomId}_status`, JSON.stringify(roomStatus));
+    } else {
+      // Update existing room
+      const roomStatus = JSON.parse(roomStatusStr);
+      roomStatus.joinerPresent = true;
+      localStorage.setItem(`room_${joinRoomId}_status`, JSON.stringify(roomStatus));
+    }
+    
     toast.success(`Joining room ${joinRoomId}`);
     navigate(`/online/${joinRoomId}`);
   };
@@ -50,6 +73,15 @@ const OnlineGame: React.FC = () => {
       toast.error("No room created yet");
       return;
     }
+    
+    // Update room status to show creator is present
+    const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
+    if (roomStatusStr) {
+      const roomStatus = JSON.parse(roomStatusStr);
+      roomStatus.creatorPresent = true;
+      localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
+    }
+    
     navigate(`/online/${roomId}`);
   };
   
@@ -64,7 +96,21 @@ const OnlineGame: React.FC = () => {
       handleCopyRoomId();
     }
   };
-
+  
+  // Clean up stale room data on component mount
+  useEffect(() => {
+    const cleanupRooms = () => {
+      const createdRoomsStr = localStorage.getItem('createdRooms');
+      if (!createdRoomsStr) return;
+      
+      const createdRooms = JSON.parse(createdRoomsStr);
+      // Remove room status for rooms that are over 24 hours old
+      // For now, we'll keep this simple and not implement actual expiration
+    };
+    
+    cleanupRooms();
+  }, []);
+  
   return (
     <div className="animate-fade-in flex flex-col w-full max-w-md mx-auto p-6 rounded-xl glass-card border border-white/20 tilt-card">
       <h2 className="text-xl font-fira font-medium text-white mb-6 text-center">Play Online</h2>
