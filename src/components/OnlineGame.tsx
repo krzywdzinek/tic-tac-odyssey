@@ -5,12 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Share2, Copy, ExternalLink, RotateCw } from 'lucide-react';
 import { generateRoomId } from '@/lib/gameUtils';
 import { toast } from "sonner";
+import { useNavigate } from 'react-router-dom';
 
 const OnlineGame: React.FC = () => {
   const [roomId, setRoomId] = useState<string>("");
   const [joinRoomId, setJoinRoomId] = useState<string>("");
-  const [inRoom, setInRoom] = useState<boolean>(false);
-  const [gameStarted, setGameStarted] = useState<boolean>(false);
+  const navigate = useNavigate();
   
   const handleCreateRoom = () => {
     const newRoomId = generateRoomId();
@@ -28,8 +28,16 @@ const OnlineGame: React.FC = () => {
       return;
     }
     
-    setInRoom(true);
     toast.success(`Joining room ${joinRoomId}`);
+    navigate(`/online/${joinRoomId}`);
+  };
+  
+  const handleEnterRoom = () => {
+    if (!roomId) {
+      toast.error("No room created yet");
+      return;
+    }
+    navigate(`/online/${roomId}`);
   };
   
   const shareGame = () => {
@@ -43,72 +51,7 @@ const OnlineGame: React.FC = () => {
       handleCopyRoomId();
     }
   };
-  
-  const startNewRound = () => {
-    toast.success("Starting a new round!");
-    // This would connect to a real backend in a production app
-  };
-  
-  const leaveRoom = () => {
-    setInRoom(false);
-    setGameStarted(false);
-    setRoomId("");
-    setJoinRoomId("");
-    toast.info("Left the game room");
-  };
 
-  // Show the room UI if in a room
-  if (inRoom) {
-    return (
-      <div className="animate-fade-in flex flex-col w-full max-w-md mx-auto p-6 rounded-xl glass-card border border-white/20 tilt-card">
-        <h2 className="text-xl font-fira font-medium text-white mb-6 text-center">Game Room: <span className="text-game-o">{roomId || joinRoomId}</span></h2>
-        
-        <div className="space-y-6">
-          <div className="flex flex-col items-center space-y-4">
-            <div className="flex items-center justify-between w-full p-3 glass-card rounded-lg">
-              <span className="font-medium font-fira text-white">Player 1 (You)</span>
-              <span className="px-2 py-1 bg-game-x/30 text-game-x text-xs rounded-full font-poppins">Connected</span>
-            </div>
-            
-            <div className="flex items-center justify-between w-full p-3 glass-card rounded-lg">
-              <span className="font-medium font-fira text-white">Player 2</span>
-              <span className="px-2 py-1 bg-white/10 text-white/70 text-xs rounded-full font-poppins animate-pulse">Waiting...</span>
-            </div>
-          </div>
-          
-          <div className="flex flex-col space-y-2 mt-6">
-            {gameStarted ? (
-              <Button 
-                onClick={startNewRound}
-                className="w-full button-press bg-gradient-to-r from-game-gradient4 to-game-gradient8 hover:opacity-90 text-white border border-white/20 font-fira"
-              >
-                <RotateCw className="h-4 w-4 mr-2" />
-                Start New Round
-              </Button>
-            ) : (
-              <Button 
-                className="w-full button-press bg-gradient-to-r from-game-gradient4 to-game-gradient8 hover:opacity-90 text-white border border-white/20 font-fira"
-                onClick={() => setGameStarted(true)}
-              >
-                <ExternalLink className="h-4 w-4 mr-2" />
-                Start Game
-              </Button>
-            )}
-            
-            <Button 
-              variant="outline" 
-              className="w-full button-press text-white border-white/20 bg-white/10 hover:bg-white/20 font-fira"
-              onClick={leaveRoom}
-            >
-              Leave Room
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Original room creation UI
   return (
     <div className="animate-fade-in flex flex-col w-full max-w-md mx-auto p-6 rounded-xl glass-card border border-white/20 tilt-card">
       <h2 className="text-xl font-fira font-medium text-white mb-6 text-center">Play Online</h2>
@@ -145,7 +88,7 @@ const OnlineGame: React.FC = () => {
               <Button 
                 variant="default" 
                 className="w-full flex items-center justify-center gap-2 button-press bg-gradient-to-r from-game-gradient7 to-game-gradient3 hover:opacity-90 text-white border border-white/20 font-fira"
-                onClick={() => setInRoom(true)}
+                onClick={handleEnterRoom}
               >
                 <ExternalLink className="h-4 w-4" />
                 Enter Game Room
