@@ -15,6 +15,19 @@ const OnlineGame: React.FC = () => {
   const handleCreateRoom = () => {
     const newRoomId = generateRoomId();
     setRoomId(newRoomId);
+    
+    // Store the created room ID in localStorage
+    const createdRooms = localStorage.getItem('createdRooms');
+    const createdRoomsList = createdRooms ? JSON.parse(createdRooms) : [];
+    
+    if (!createdRoomsList.includes(newRoomId)) {
+      createdRoomsList.push(newRoomId);
+      localStorage.setItem('createdRooms', JSON.stringify(createdRoomsList));
+    }
+    
+    // Initialize room status
+    const roomStatus = { creatorPresent: false, joinerPresent: false };
+    localStorage.setItem(`room_${newRoomId}_status`, JSON.stringify(roomStatus));
   };
   
   const handleCopyRoomId = () => {

@@ -11,27 +11,60 @@ const OnlineGamePage = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [opponentConnected, setOpponentConnected] = useState(false);
   const [gameActive, setGameActive] = useState(false);
+  const [isRoomCreator, setIsRoomCreator] = useState(false);
   const { resetGame, playNextRound } = useGame();
   
   useEffect(() => {
     if (roomId) {
-      // This would be implemented with a real-time connection
-      // to a server using something like Firebase, Socket.io, etc.
-      setTimeout(() => {
-        setIsConnected(true);
-        toast.success("Connected to game room!");
-        
-        // For demo purposes, simulate opponent joining after 2 seconds (faster than before)
-        setTimeout(() => {
-          setOpponentConnected(true);
-          toast.success("Opponent has joined the game!");
-        }, 2000);
+      // Check if this user created the room
+      const createdRooms = localStorage.getItem('createdRooms');
+      const createdRoomsList = createdRooms ? JSON.parse(createdRooms) : [];
+      
+      if (createdRoomsList.includes(roomId)) {
+        setIsRoomCreator(true);
+        // Update room status in localStorage to indicate the creator is present
+        const roomStatus = { creatorPresent: true, joinerPresent: false };
+        localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
+      } else {
+        // This is a joiner, update room status
+        const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
+        const roomStatus = roomStatusStr ? JSON.parse(roomStatusStr) : { creatorPresent: false, joinerPresent: false };
+        roomStatus.joinerPresent = true;
+        localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
+      }
+      
+      setIsConnected(true);
+      toast.success("Connected to game room!");
+      
+      // Start checking if both players are connected
+      const checkInterval = setInterval(() => {
+        const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
+        if (roomStatusStr) {
+          const status = JSON.parse(roomStatusStr);
+          setOpponentConnected(isRoomCreator ? status.joinerPresent : status.creatorPresent);
+        }
       }, 1000);
+      
+      // Cleanup
+      return () => {
+        clearInterval(checkInterval);
+        // Update room status when leaving
+        const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
+        if (roomStatusStr) {
+          const status = JSON.parse(roomStatusStr);
+          if (isRoomCreator) {
+            status.creatorPresent = false;
+          } else {
+            status.joinerPresent = false;
+          }
+          localStorage.setItem(`room_${roomId}_status`, JSON.stringify(status));
+        }
+      };
     }
     
     // Reset game state when entering room
     resetGame();
-  }, [roomId, resetGame]);
+  }, [roomId, resetGame, isRoomCreator]);
   
   const handleCopyRoomLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -39,8 +72,18 @@ const OnlineGamePage = () => {
   };
   
   const handleStartGame = () => {
+    if (!opponentConnected) {
+      toast.error("Waiting for opponent to join");
+      return;
+    }
+    
     setGameActive(true);
     playNextRound();
+    
+    // Store game started status
+    const roomStatus = { creatorPresent: true, joinerPresent: true, gameActive: true };
+    localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
+    
     toast.success("Game started! X goes first.");
   };
   
@@ -49,8 +92,26 @@ const OnlineGamePage = () => {
     toast.success("Starting next round!");
   };
   
+  // Check if game is already active (when joining a started game)
+  useEffect(() => {
+    if (roomId) {
+      const checkGameActive = setInterval(() => {
+        const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
+        if (roomStatusStr) {
+          const status = JSON.parse(roomStatusStr);
+          if (status.gameActive && !gameActive) {
+            setGameActive(true);
+            setOpponentConnected(true);
+          }
+        }
+      }, 1000);
+      
+      return () => clearInterval(checkGameActive);
+    }
+  }, [roomId, gameActive]);
+  
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-gray-900 to-gray-950">
+    <div className="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8 bg-gradient-to-b from-gray-950 to-gray-950">
       <header className="w-full max-w-lg mx-auto flex items-center justify-between mb-8">
         <Link to="/">
           <Button variant="ghost" className="gap-2 text-white hover:bg-white/10">
@@ -82,12 +143,12 @@ const OnlineGamePage = () => {
           
           <div className="flex flex-col space-y-4">
             <div className="flex items-center justify-between p-3 glass-card rounded-lg border border-white/10">
-              <span className="font-medium font-fira text-white">You</span>
+              <span className="font-medium font-fira text-white">{isRoomCreator ? 'You (Creator)' : 'Room Creator'}</span>
               <span className="px-2 py-1 bg-green-500/30 text-green-400 text-xs rounded-full font-poppins">Connected</span>
             </div>
             
             <div className="flex items-center justify-between p-3 glass-card rounded-lg border border-white/10">
-              <span className="font-medium font-fira text-white">Opponent</span>
+              <span className="font-medium font-fira text-white">{isRoomCreator ? 'Opponent' : 'You (Joined)'}</span>
               {opponentConnected ? (
                 <span className="px-2 py-1 bg-green-500/30 text-green-400 text-xs rounded-full font-poppins">Connected</span>
               ) : (
@@ -107,7 +168,7 @@ const OnlineGamePage = () => {
             
             {gameActive ? (
               <Button
-                className="w-full button-press bg-gradient-to-r from-game-gradient4 to-game-gradient8 hover:opacity-90 text-white border border-white/20 font-fira"
+                className="w-full button-press bg-gradient-to-r from-[#B64028] to-[#398EA2] hover:opacity-90 text-white border border-white/20 font-fira"
                 onClick={handlePlayNextRound}
               >
                 <Play className="h-4 w-4 mr-2" />
@@ -115,7 +176,7 @@ const OnlineGamePage = () => {
               </Button>
             ) : (
               <Button
-                className="w-full button-press bg-gradient-to-r from-game-gradient4 to-game-gradient8 hover:opacity-90 text-white border border-white/20 font-fira"
+                className="w-full button-press bg-gradient-to-r from-[#B64028] to-[#398EA2] hover:opacity-90 text-white border border-white/20 font-fira"
                 disabled={!opponentConnected}
                 onClick={handleStartGame}
               >
