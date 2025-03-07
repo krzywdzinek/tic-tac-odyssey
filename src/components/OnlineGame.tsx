@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +29,8 @@ const OnlineGame: React.FC = () => {
     const roomStatus = { 
       creatorPresent: true, 
       joinerPresent: false,
-      gameActive: false 
+      gameActive: false,
+      lastUpdated: Date.now()
     };
     localStorage.setItem(`room_${newRoomId}_status`, JSON.stringify(roomStatus));
     
@@ -54,13 +56,15 @@ const OnlineGame: React.FC = () => {
       const roomStatus = { 
         creatorPresent: false, 
         joinerPresent: true,
-        gameActive: false 
+        gameActive: false,
+        lastUpdated: Date.now()
       };
       localStorage.setItem(`room_${joinRoomId}_status`, JSON.stringify(roomStatus));
     } else {
       // Update existing room
       const roomStatus = JSON.parse(roomStatusStr);
       roomStatus.joinerPresent = true;
+      roomStatus.lastUpdated = Date.now();
       localStorage.setItem(`room_${joinRoomId}_status`, JSON.stringify(roomStatus));
     }
     
@@ -79,6 +83,7 @@ const OnlineGame: React.FC = () => {
     if (roomStatusStr) {
       const roomStatus = JSON.parse(roomStatusStr);
       roomStatus.creatorPresent = true;
+      roomStatus.lastUpdated = Date.now();
       localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
     }
     

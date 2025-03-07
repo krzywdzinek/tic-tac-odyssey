@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { toast } from "sonner";
-import { ArrowLeft, Copy, Users, Play } from 'lucide-react';
+import { ArrowLeft, Copy, Users, Play, RefreshCw } from 'lucide-react';
 import { useGame } from '../context/GameContext';
 
 const OnlineGamePage = () => {
@@ -12,51 +12,80 @@ const OnlineGamePage = () => {
   const [opponentConnected, setOpponentConnected] = useState(false);
   const [gameActive, setGameActive] = useState(false);
   const [isRoomCreator, setIsRoomCreator] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const { resetGame, playNextRound } = useGame();
+  
+  const refreshStatus = () => {
+    setRefreshTrigger(prev => prev + 1);
+    checkConnectionStatus();
+    toast.info("Connection status refreshed");
+  };
+
+  const checkConnectionStatus = () => {
+    if (!roomId) return;
+    
+    const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
+    if (roomStatusStr) {
+      const status = JSON.parse(roomStatusStr);
+      if (isRoomCreator) {
+        setOpponentConnected(status.joinerPresent);
+      } else {
+        setOpponentConnected(status.creatorPresent);
+      }
+      setGameActive(status.gameActive || false);
+    }
+  };
   
   useEffect(() => {
     if (roomId) {
       // Check if this user created the room
       const createdRooms = localStorage.getItem('createdRooms');
       const createdRoomsList = createdRooms ? JSON.parse(createdRooms) : [];
+      const userIsCreator = createdRoomsList.includes(roomId);
       
-      if (createdRoomsList.includes(roomId)) {
-        setIsRoomCreator(true);
-        // Update room status in localStorage to indicate the creator is present
-        const roomStatus = { creatorPresent: true, joinerPresent: false };
-        localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
+      setIsRoomCreator(userIsCreator);
+      
+      // Update room status in localStorage
+      const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
+      let roomStatus = roomStatusStr ? JSON.parse(roomStatusStr) : { 
+        creatorPresent: false, 
+        joinerPresent: false,
+        gameActive: false,
+        lastUpdated: Date.now()
+      };
+      
+      if (userIsCreator) {
+        roomStatus.creatorPresent = true;
+        setOpponentConnected(roomStatus.joinerPresent);
       } else {
-        // This is a joiner, update room status
-        const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
-        const roomStatus = roomStatusStr ? JSON.parse(roomStatusStr) : { creatorPresent: false, joinerPresent: false };
         roomStatus.joinerPresent = true;
-        localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
+        setOpponentConnected(roomStatus.creatorPresent);
       }
+      
+      roomStatus.lastUpdated = Date.now();
+      localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
       
       setIsConnected(true);
       toast.success("Connected to game room!");
       
       // Start checking if both players are connected
       const checkInterval = setInterval(() => {
-        const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
-        if (roomStatusStr) {
-          const status = JSON.parse(roomStatusStr);
-          setOpponentConnected(isRoomCreator ? status.joinerPresent : status.creatorPresent);
-        }
-      }, 1000);
+        checkConnectionStatus();
+      }, 2000);
       
       // Cleanup
       return () => {
         clearInterval(checkInterval);
         // Update room status when leaving
-        const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
-        if (roomStatusStr) {
-          const status = JSON.parse(roomStatusStr);
-          if (isRoomCreator) {
+        const currentStatusStr = localStorage.getItem(`room_${roomId}_status`);
+        if (currentStatusStr) {
+          const status = JSON.parse(currentStatusStr);
+          if (userIsCreator) {
             status.creatorPresent = false;
           } else {
             status.joinerPresent = false;
           }
+          status.lastUpdated = Date.now();
           localStorage.setItem(`room_${roomId}_status`, JSON.stringify(status));
         }
       };
@@ -64,7 +93,12 @@ const OnlineGamePage = () => {
     
     // Reset game state when entering room
     resetGame();
-  }, [roomId, resetGame, isRoomCreator]);
+  }, [roomId, resetGame]);
+  
+  // Force refresh status when refreshTrigger changes
+  useEffect(() => {
+    checkConnectionStatus();
+  }, [refreshTrigger]);
   
   const handleCopyRoomLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -77,14 +111,18 @@ const OnlineGamePage = () => {
       return;
     }
     
-    setGameActive(true);
-    playNextRound();
-    
-    // Store game started status
-    const roomStatus = { creatorPresent: true, joinerPresent: true, gameActive: true };
-    localStorage.setItem(`room_${roomId}_status`, JSON.stringify(roomStatus));
-    
-    toast.success("Game started! X goes first.");
+    // Update game status in localStorage
+    const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
+    if (roomStatusStr) {
+      const status = JSON.parse(roomStatusStr);
+      status.gameActive = true;
+      status.lastUpdated = Date.now();
+      localStorage.setItem(`room_${roomId}_status`, JSON.stringify(status));
+      
+      setGameActive(true);
+      playNextRound();
+      toast.success("Game started! X goes first.");
+    }
   };
   
   const handlePlayNextRound = () => {
@@ -95,7 +133,7 @@ const OnlineGamePage = () => {
   // Check if game is already active (when joining a started game)
   useEffect(() => {
     if (roomId) {
-      const checkGameActive = setInterval(() => {
+      const checkGameActive = () => {
         const roomStatusStr = localStorage.getItem(`room_${roomId}_status`);
         if (roomStatusStr) {
           const status = JSON.parse(roomStatusStr);
@@ -104,9 +142,12 @@ const OnlineGamePage = () => {
             setOpponentConnected(true);
           }
         }
-      }, 1000);
+      };
       
-      return () => clearInterval(checkGameActive);
+      checkGameActive();
+      const interval = setInterval(checkGameActive, 2000);
+      
+      return () => clearInterval(interval);
     }
   }, [roomId, gameActive]);
   
@@ -137,6 +178,18 @@ const OnlineGamePage = () => {
             </div>
           </div>
           
+          <div className="flex justify-end mb-2">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={refreshStatus} 
+              className="text-white hover:bg-white/10 border-white/20"
+            >
+              <RefreshCw className="h-3.5 w-3.5 mr-1" />
+              Refresh Status
+            </Button>
+          </div>
+          
           <h2 className="text-xl font-semibold font-fira mb-4 text-white">
             {isConnected ? 'Connected to Game Room' : 'Connecting...'}
           </h2>
@@ -144,12 +197,14 @@ const OnlineGamePage = () => {
           <div className="flex flex-col space-y-4">
             <div className="flex items-center justify-between p-3 glass-card rounded-lg border border-white/10">
               <span className="font-medium font-fira text-white">{isRoomCreator ? 'You (Creator)' : 'Room Creator'}</span>
-              <span className="px-2 py-1 bg-green-500/30 text-green-400 text-xs rounded-full font-poppins">Connected</span>
+              <span className={`px-2 py-1 ${isRoomCreator || opponentConnected ? 'bg-green-500/30 text-green-400' : 'bg-yellow-500/30 text-yellow-400 animate-pulse'} text-xs rounded-full font-poppins`}>
+                {isRoomCreator || opponentConnected ? 'Connected' : 'Waiting...'}
+              </span>
             </div>
             
             <div className="flex items-center justify-between p-3 glass-card rounded-lg border border-white/10">
               <span className="font-medium font-fira text-white">{isRoomCreator ? 'Opponent' : 'You (Joined)'}</span>
-              {opponentConnected ? (
+              {opponentConnected || !isRoomCreator ? (
                 <span className="px-2 py-1 bg-green-500/30 text-green-400 text-xs rounded-full font-poppins">Connected</span>
               ) : (
                 <span className="px-2 py-1 bg-yellow-500/30 text-yellow-400 text-xs rounded-full font-poppins animate-pulse">Waiting...</span>
